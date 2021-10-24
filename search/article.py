@@ -20,3 +20,13 @@ class Article:
 
     def analyze(self):
         self.term_frequencies = Counter(analyze(self.fulltext))
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content,
+            "url": self.url,
+            "order": self.order,
+            "category": self.category,
+        }
