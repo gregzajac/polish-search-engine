@@ -34,8 +34,10 @@ class Index:
         analyzed_query = analyze(query)
         hits = [self.index.get(token, set()) for token in analyzed_query]
         articles = [self.articles[article_id] for article_id in set.intersection(*hits)]
-        print(articles)
         return articles
+
+    def is_saved(self):
+        return os.path.isfile(self.path_to_file)
 
     def save(self):
         indexes_to_save = {}
@@ -46,22 +48,13 @@ class Index:
             articles_to_save[key] = value.to_dict()
 
         data = json.dumps({"index": indexes_to_save, "articles": articles_to_save})
-        with open(self.path_to_file, "w") as f:
+        with open(self.path_to_file, "w", encoding="utf-8") as f:
             f.write(data)
 
     def load(self):
-        try:
-            with open(self.path_to_file, "r") as f:
-                data = json.loads(f.read())
-        except os.error:
-            print(f"File '{self.path_to_file}' not found")
+        with open(self.path_to_file, "r", encoding="utf-8") as f:
+            data = json.loads(f.read())
         for key, value in data["index"].items():
             self.index[key] = set(value)
         for key, value in data["articles"].items():
             self.articles[key] = Article(**value)
-
-        print("index:", self.index)
-        print("articles:", self.articles)
-
-    def is_saved(self):
-        return os.path.exists(self.path_to_file)
