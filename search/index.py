@@ -40,12 +40,13 @@ class Index:
         return os.path.isfile(self.path_to_file)
 
     def save(self):
+        # prepare indexes and articles for serialization
         indexes_to_save = {}
         for key, value in self.index.items():
             indexes_to_save[key] = list(value)
         articles_to_save = {}
         for key, value in self.articles.items():
-            articles_to_save[key] = value.to_dict()
+            articles_to_save[str(key)] = value.to_dict()
 
         data = json.dumps({"index": indexes_to_save, "articles": articles_to_save})
         with open(self.path_to_file, "w", encoding="utf-8") as f:
@@ -57,4 +58,4 @@ class Index:
         for key, value in data["index"].items():
             self.index[key] = set(value)
         for key, value in data["articles"].items():
-            self.articles[key] = Article(**value)
+            self.articles[int(key)] = Article(**value)

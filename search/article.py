@@ -30,3 +30,6 @@ class Article:
             "order": self.order,
             "category": self.category,
         }
+
+    def from_dict(self, article_dict):
+        pass
